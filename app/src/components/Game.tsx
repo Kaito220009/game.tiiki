@@ -1,19 +1,8 @@
 import { useState } from 'react'
-
-// Types for weapon attributes
-export type Attribute = '切削' | '溶接' | '研磨'
-export type Weight = '軽量' | '中量' | '重量'
-export type Rarity = 'N' | 'R' | 'SR' | 'UR'
-
-export interface Weapon {
-  id: number
-  name: string
-  attribute: Attribute
-  weight: Weight
-  rarity: Rarity
-  attack: number
-  crit: number
-}
+import { Link } from 'react-router-dom'
+import type { Weapon, Enemy, Attribute, Weight, Rarity } from '../types'
+import { sampleWeapons } from '../data/weapons'
+import { useGame } from '../GameContext'
 
 const weightCoeff: Record<Weight, number> = {
   '軽量': 0.8,
@@ -42,38 +31,11 @@ const disadvantage: Record<Attribute, Attribute> = {
   '研磨': '溶接',
 }
 
-export interface Enemy {
-  attribute: Attribute
-  hp: number
-}
-
-// simple weapon pool
-const sampleWeapons: Weapon[] = [
-  {
-    id: 1,
-    name: '基本刀',
-    attribute: '切削',
-    weight: '中量',
-    rarity: 'R',
-    attack: 10,
-    crit: 0.1,
-  },
-  {
-    id: 2,
-    name: '研磨ハンマー',
-    attribute: '研磨',
-    weight: '重量',
-    rarity: 'SR',
-    attack: 15,
-    crit: 0.05,
-  },
-];
 
 export default function Game() {
-  const [stamina, setStamina] = useState(100)
+  const { stamina, setStamina, weapon, setWeapon } = useGame()
   const [enemy, setEnemy] = useState<Enemy>({ attribute: '切削', hp: 30 })
   const [log, setLog] = useState<string[]>([])
-  const [weapon, setWeapon] = useState<Weapon>(sampleWeapons[0])
 
   const consumeStamina = (amount: number) => {
     setStamina(s => Math.max(0, s - amount))
@@ -133,6 +95,10 @@ export default function Game() {
       <button onClick={attack}>戦う</button>
       <button onClick={run}>逃げる</button>
       <button onClick={useItem}>アイテム</button>
+
+      <div style={{ marginTop: '1em' }}>
+        <Link to="/">戻る</Link>
+      </div>
 
       <h3>ログ</h3>
       <ul>

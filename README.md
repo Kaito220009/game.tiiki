@@ -10,4 +10,7 @@ npm install
 npm run dev
 ```
 
-The game logic is located in `src/components/Game.tsx`.
+The React app now includes multiple screens:
+- `Menu` (`/`) for navigation
+- `Game` (`/battle`) for battles
+- `Inventory` (`/inventory`) for weapon selection
