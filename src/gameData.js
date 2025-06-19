@@ -3,6 +3,9 @@
 // 調整.txtファイルからデータを読み込む機能
 let adjustmentData = null;
 
+// クイズデータ読み込み機能
+let quizData = null;
+
 // 調整データを読み込む関数
 export const loadAdjustmentData = async () => {
   if (adjustmentData) return adjustmentData;
@@ -434,4 +437,125 @@ export const updateGameDataFromAdjustment = async () => {
       WEIGHT_CLASS.HEAVY.multiplier = adjustData.constants.WEIGHT_HEAVY_MULTIPLIER;
     }
   }
+};
+
+// クイズデータを読み込む関数
+export const loadQuizData = async () => {
+  if (quizData) return quizData;
+  
+  try {
+    const response = await fetch('/QUIZ.txt');
+    const text = await response.text();
+    quizData = parseQuizData(text);
+    return quizData;
+  } catch (error) {
+    console.warn('QUIZ.txtファイルの読み込みに失敗しました。デフォルトクイズを使用します。', error);
+    return getDefaultQuizData();
+  }
+};
+
+// クイズデータをパースする関数
+const parseQuizData = (text) => {
+  const quizzes = [];
+  const lines = text.split('\n');
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    
+    const parts = trimmed.split(',');
+    if (parts.length >= 8) {
+      const [id, question, optionA, optionB, optionC, optionD, correctAnswer, explanation] = parts;
+      
+      const quiz = {
+        id,
+        question,
+        options: {
+          A: optionA,
+          B: optionB,
+          C: optionC
+        },
+        correctAnswer,
+        explanation
+      };
+      
+      // OptionDが存在する場合は追加
+      if (optionD && optionD.trim()) {
+        quiz.options.D = optionD;
+      }
+      
+      quizzes.push(quiz);
+    }
+  }
+  
+  return quizzes;
+};
+
+// デフォルトクイズデータ（フォールバック用）
+const getDefaultQuizData = () => [
+  {
+    id: 'Q001',
+    question: '溶接とは何か？',
+    options: {
+      A: '高温で母材を溶かし融合させる加工',
+      B: '溶接棒同士を接触させて結合する方法',
+      C: '低温で樹脂を付着させる接着技術'
+    },
+    correctAnswer: 'A',
+    explanation: '溶接は金属などを高温で溶かして融合させる加工方法です'
+  },
+  {
+    id: 'Q002',
+    question: '溶接作業前に必ず行うべき準備はどれ？',
+    options: {
+      A: '溶接機の動作確認',
+      B: '周囲の可燃物の除去',
+      C: '作業服・手袋・安全靴の着用',
+      D: 'すべて正しい'
+    },
+    correctAnswer: 'D',
+    explanation: '火花やヒューム対策、安全確保のため、①機器チェック、②可燃物を除去、③適切な服装はすべて必要です'
+  },
+  {
+    id: 'Q003',
+    question: 'アーク溶接で目を守るために必要なのは？',
+    options: {
+      A: 'サングラス',
+      B: '溶接面付きヘルメット',
+      C: '通常の作業用ゴーグル',
+      D: '防塵マスク'
+    },
+    correctAnswer: 'B',
+    explanation: '強い紫外線から目を守るには「溶接面」が必須。ゴーグルでは不足です'
+  },
+  {
+    id: 'Q004',
+    question: '濡れた服装・手袋での溶接作業が危険な理由は？',
+    options: {
+      A: '感電しやすくなるから',
+      B: '火傷しやすくなるから',
+      C: '溶接ビードが汚れやすくなるから',
+      D: '服が縮むから'
+    },
+    correctAnswer: 'A',
+    explanation: '濡れた状態では水分が電気を通し、感電リスクが高まります'
+  },
+  {
+    id: 'Q005',
+    question: '溶接後に火花やスパッタの残り火はいつまで注意が必要？',
+    options: {
+      A: '作業直後だけ',
+      B: '1時間程度',
+      C: '数分程度',
+      D: '翌日'
+    },
+    correctAnswer: 'B',
+    explanation: '終了後1時間程度は火災の恐れがあるのでチェックが必要です'
+  }
+];
+
+// クイズデータを強制的に再読み込みする関数（開発用）
+export const reloadQuizData = () => {
+  quizData = null;
+  return loadQuizData();
 }; 

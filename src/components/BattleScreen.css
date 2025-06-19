@@ -146,8 +146,8 @@
 }
 
 .character-image {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   object-fit: cover;
   transition: all 0.3s ease;
 }
@@ -157,24 +157,22 @@
 }
 
 .enemy-image {
-  /* 全ての敵画像を反転 */
-  transform: scaleX(-1);
+  /* 敵画像のスタイル */
 }
 
 .enemy-image.attacking {
   animation: enemy-attack 0.5s ease;
   filter: brightness(1.2) saturate(1.2);
-  transform: scaleX(-1);
 }
 
 .enemy-image.defeated {
   filter: grayscale(1) brightness(0.5);
-  transform: scaleX(-1) scale(0.8);
+  transform: scale(0.8);
 }
 
 .enemy-placeholder {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   background: linear-gradient(45deg, #555, #777);
   display: flex;
   align-items: center;
@@ -541,13 +539,13 @@
   }
   
   .character-image {
-    width: 80px;
-    height: 80px;
+    width: 160px;
+    height: 160px;
   }
   
   .enemy-placeholder {
-    width: 80px;
-    height: 80px;
+    width: 160px;
+    height: 160px;
   }
   
   .enemy-icon {
@@ -603,13 +601,13 @@
   }
   
   .character-image {
-    width: 70px;
-    height: 70px;
+    width: 140px;
+    height: 140px;
   }
   
   .enemy-placeholder {
-    width: 70px;
-    height: 70px;
+    width: 140px;
+    height: 140px;
   }
   
   .enemy-icon {

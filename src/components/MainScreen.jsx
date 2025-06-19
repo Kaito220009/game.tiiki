@@ -142,11 +142,11 @@ const MainScreen = ({ gameState, onEnterDungeon, onChangeScreen, onUseStaminaPot
                 <span className="btn-label">装備・アイテム</span>
               </button>
               <button 
-                onClick={() => onChangeScreen('status')}
-                className="menu-btn status-btn"
+                onClick={() => onChangeScreen('training')}
+                className="menu-btn training-btn"
               >
-                <span className="btn-icon"></span>
-                <span className="btn-label">ステータス詳細</span>
+                <span className="btn-icon">🎯</span>
+                <span className="btn-label">トレーニング</span>
               </button>
             </div>
           </div>
