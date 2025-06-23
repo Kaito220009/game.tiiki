@@ -148,6 +148,13 @@ const MainScreen = ({ gameState, onEnterDungeon, onChangeScreen, onUseStaminaPot
                 <span className="btn-icon">🎯</span>
                 <span className="btn-label">トレーニング</span>
               </button>
+              <button 
+                onClick={() => onChangeScreen('settings')}
+                className="menu-btn settings-btn"
+              >
+                <span className="btn-icon">⚙️</span>
+                <span className="btn-label">設定</span>
+              </button>
             </div>
           </div>
         </div>

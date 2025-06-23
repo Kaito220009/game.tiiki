@@ -1,6 +1,6 @@
 .dungeon-screen {
-  max-width: 480px;
-  margin: 0 auto;
+  width: 100vw;
+  margin: 0;
   padding: 15px;
   font-family: 'DotGothic16', monospace;
   min-height: 100vh;
@@ -11,6 +11,9 @@
   background-attachment: fixed;
   color: #ffffff;
   position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -31,6 +34,10 @@
   align-items: center;
   gap: 20px;
   margin-bottom: 30px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .back-btn {
@@ -87,6 +94,10 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
   transition: all 0.4s ease;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .dungeon-info:hover {
@@ -123,6 +134,10 @@
 
 .enemies-section {
   margin-bottom: 30px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .enemies-section h2 {
@@ -715,5 +730,62 @@
   .dungeon-tips li {
     font-size: 12px;
     margin-bottom: 5px;
+  }
+}
+
+/* 大画面対応 */
+@media (min-width: 1400px) {
+  .dungeon-screen {
+    padding: 30px 40px;
+  }
+  
+  .dungeon-header {
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .dungeon-info {
+    padding: 35px;
+    margin-bottom: 40px;
+  }
+  
+  .enemies-section {
+    margin-bottom: 40px;
+  }
+  
+  .enemies-list {
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  }
+  
+  .enemy-card {
+    padding: 25px;
+  }
+  
+  .enemy-stats {
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .dungeon-screen {
+    padding: 25px 30px;
+  }
+  
+  .enemies-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .dungeon-screen {
+    padding: 20px 25px;
+  }
+  
+  .enemies-list {
+    gap: 18px;
   }
 } 

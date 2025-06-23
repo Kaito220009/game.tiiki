@@ -5,6 +5,7 @@ import InventoryScreen from './components/InventoryScreen.jsx';
 import DungeonScreen from './components/DungeonScreen.jsx';
 import BattleScreen from './components/BattleScreen.jsx';
 import TrainingScreen from './components/TrainingScreen.jsx';
+import SettingsScreen from './components/SettingsScreen.jsx';
 import './App.css';
 
 function App() {
@@ -20,7 +21,9 @@ function App() {
     dealDamageToEnemy,
     takeDamage,
     changeScreen,
-    addBattleLog
+    addBattleLog,
+    unlockRandomWeapon,
+    updateGameValues
   } = useGameState();
 
   const renderCurrentScreen = () => {
@@ -72,6 +75,16 @@ function App() {
           <TrainingScreen
             gameState={gameState}
             onChangeScreen={changeScreen}
+            onUnlockRandomWeapon={unlockRandomWeapon}
+          />
+        );
+      
+      case 'settings':
+        return (
+          <SettingsScreen
+            gameState={gameState}
+            onChangeScreen={changeScreen}
+            onUpdateGameValues={updateGameValues}
           />
         );
       

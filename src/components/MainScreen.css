@@ -1,6 +1,6 @@
 .main-screen {
-  max-width: 480px;
-  margin: 0 auto;
+  width: 100vw;
+  margin: 0;
   padding: 15px;
   font-family: 'DotGothic16', monospace;
   background-image: url('/image/main/背景.png');
@@ -11,6 +11,7 @@
   color: #ffffff;
   min-height: 100vh;
   position: relative;
+  box-sizing: border-box;
 }
 
 .main-screen::before {
@@ -39,12 +40,62 @@
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
-/* 2カラムレイアウト */
+/* レスポンシブグリッドレイアウト */
 .main-content {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 15px;
+  grid-template-columns: 1fr;
+  gap: 20px;
   align-items: start;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 中画面調整 */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .main-content {
+    padding: 0 20px;
+  }
+  
+  .main-screen {
+    padding: 18px;
+  }
+}
+
+/* 大画面では2カラム */
+@media (min-width: 992px) {
+  .main-content {
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+  }
+  
+  .main-screen {
+    padding: 15px 20px;
+  }
+}
+
+/* 超大画面では3カラム風 */
+@media (min-width: 1400px) {
+  .main-content {
+    grid-template-columns: 3fr 2fr;
+    gap: 30px;
+    padding: 0 40px;
+  }
+  
+  .main-screen {
+    padding: 20px;
+  }
+  
+  .dungeon-showcase {
+    padding: 25px;
+  }
+  
+  .player-status {
+    padding: 25px;
+  }
+  
+  .menu-section {
+    padding: 25px;
+  }
 }
 
 /* 左カラム: ダンジョンパネル */
@@ -351,8 +402,8 @@
 }
 
 .player-avatar {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 8px;
   border: 3px solid #4CAF50;
@@ -683,8 +734,8 @@
   }
   
   .player-avatar {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
   }
   
   .status-details h3 {
@@ -752,8 +803,8 @@
   }
   
   .player-avatar {
-    width: 45px;
-    height: 45px;
+    width: 70px;
+    height: 70px;
   }
   
   .status-details h3 {
@@ -819,8 +870,8 @@
   
   .player-avatar {
     align-self: center;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
   }
   
   .status-details h3 {
