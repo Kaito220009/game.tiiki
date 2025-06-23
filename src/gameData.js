@@ -232,6 +232,51 @@ export const WEAPONS = {
     critRate: 0.16,
     effect: 'multi_strike',
     image: '/image/weapon/polishing/polishing_light_UR.png'
+  },
+  // 溶接武器（軽量）
+  welding_light_N: {
+    id: 'welding_light_N',
+    name: '軽量溶接機 (N)',
+    attribute: 'WELDING',
+    weightClass: 'LIGHT',
+    rarity: 'N',
+    baseAttack: 48,
+    critRate: 0.05,
+    effect: null,
+    image: '/image/weapon/welding/welding_light_N.png'
+  },
+  welding_light_R: {
+    id: 'welding_light_R',
+    name: '軽量溶接機 (R)',
+    attribute: 'WELDING',
+    weightClass: 'LIGHT',
+    rarity: 'R',
+    baseAttack: 75,
+    critRate: 0.08,
+    effect: null,
+    image: '/image/weapon/welding/welding_light_R.png'
+  },
+  welding_light_SR: {
+    id: 'welding_light_SR',
+    name: '軽量溶接機 (SR)',
+    attribute: 'WELDING',
+    weightClass: 'LIGHT',
+    rarity: 'SR',
+    baseAttack: 115,
+    critRate: 0.12,
+    effect: 'burn_damage',
+    image: '/image/weapon/welding/welding_light_SR.png'
+  },
+  welding_light_UR: {
+    id: 'welding_light_UR',
+    name: '軽量溶接機 (UR)',
+    attribute: 'WELDING',
+    weightClass: 'LIGHT',
+    rarity: 'UR',
+    baseAttack: 175,
+    critRate: 0.15,
+    effect: 'heat_blast',
+    image: '/image/weapon/welding/welding_light_UR.png'
   }
 };
 
@@ -265,7 +310,7 @@ export const ENEMIES = {
   // 切削ダンジョン
   cutting_normal: {
     id: 'cutting_normal',
-    name: '鋼鉄ゴーレム',
+    name: 'チャッキー',
     attribute: 'CUTTING',
     maxHp: 250,
     attack: 45,
@@ -277,7 +322,7 @@ export const ENEMIES = {
   },
   cutting_boss: {
     id: 'cutting_boss',
-    name: '機械工マスター',
+    name: 'ドリリングロード',
     attribute: 'CUTTING',
     maxHp: 900,
     attack: 85,
@@ -380,7 +425,7 @@ export const getAttributeMultiplier = async (attackerAttribute, defenderAttribut
 };
 
 // 最終ダメージ計算（調整可能）
-export const calculateDamage = async (weapon, playerLevel, enemyAttribute, isCritical = false) => {
+export const calculateDamage = async (weapon, playerLevel, enemyAttribute, isCritical = false, enemyDefense = 0) => {
   const adjustData = await loadAdjustmentData();
   const constants = adjustData.constants || getDefaultAdjustmentData().constants;
   
@@ -388,7 +433,13 @@ export const calculateDamage = async (weapon, playerLevel, enemyAttribute, isCri
   const attributeMultiplier = await getAttributeMultiplier(weapon.attribute, enemyAttribute);
   const critMultiplier = isCritical ? (constants.CRITICAL_DAMAGE_MULTIPLIER || 2.0) : 1.0;
   
-  return Math.floor(weapon.baseAttack * levelMultiplier * attributeMultiplier * critMultiplier);
+  // 基本ダメージ計算
+  const baseDamage = weapon.baseAttack * levelMultiplier * attributeMultiplier * critMultiplier;
+  
+  // 防御力を考慮したダメージ計算（最低1ダメージは保証）
+  const finalDamage = Math.max(1, Math.floor(baseDamage - enemyDefense));
+  
+  return finalDamage;
 };
 
 // 調整データでゲームデータを更新する関数

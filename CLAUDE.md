@@ -19,6 +19,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## コマンド
 
 ```bash
+# 開発サーバー起動（通常は実行不要）
+npm run dev
+
 # ビルド
 npm run build
 
@@ -30,6 +33,8 @@ npm run preview
 ```
 
 **重要**: `npm run dev` は実行しないでください（こちらで実行するため）
+
+**ビルド・リントの確認**: 変更後は必ず `npm run build` と `npm run lint` を実行してエラーがないことを確認してください。
 
 ## アーキテクチャ
 
@@ -45,7 +50,8 @@ src/
     ├── MainScreen.jsx        # メイン画面（ダンジョン選択）
     ├── InventoryScreen.jsx   # インベントリ画面
     ├── DungeonScreen.jsx     # ダンジョン画面
-    └── BattleScreen.jsx      # 戦闘画面
+    ├── BattleScreen.jsx      # 戦闘画面
+    └── TrainingScreen.jsx    # 訓練画面（クイズシステム）
 ```
 
 ### 状態管理
@@ -60,6 +66,7 @@ src/
 
 `currentScreen`で制御される単一画面アプリケーション：
 - `main` → `dungeon` → `battle` → `dungeon` または `main`
+- `main` → `training` → `main`
 - `inventory`はどの画面からでもアクセス可能
 
 ### ゲームシステム
@@ -69,6 +76,7 @@ src/
 3. **重量クラス**: 軽量 < 中量 < 重量（スタミナ消費量に影響）
 4. **装備システム**: 4つの装備スロット
 5. **経験値・レベル**: 指数関数的な成長曲線
+6. **訓練システム**: クイズ形式で知識習得とレベルアップ
 
 ### データ定義の場所
 
@@ -76,16 +84,27 @@ src/
 - 武器データ（WEAPONS）
 - 敵データ（ENEMIES）
 - ダンジョンデータ（DUNGEONS）
+- クイズデータ（QUIZ.txt読み込み）
 - レアリティ、属性、重量クラス定義
 - ダメージ、経験値、スタミナ計算式
+
+**外部データファイル**:
+- `QUIZ.txt` - クイズデータ（JSON形式）
+- `adjustment.txt` - 数値調整用データ（CSVライク形式）
+
+**データ読み込みシステム**: `loadAdjustmentData()`, `loadQuizData()` 関数で非同期読み込み
 
 ### アセット管理
 
 画像は`/image/`以下に体系的に整理：
-- `weapon/` - 武器画像
-- `enemy/` - 敵画像
-- `main/` - UI画像
-- `stage/` - 背景画像
+- `weapon/` - 武器画像（属性別サブフォルダ: cutting, welding, polishing）
+- `enemy/` - 敵画像（ダンジョン別サブフォルダ: 切削, 溶接, トレーニング）
+- `main/` - UI画像（タイトル、背景）
+- `stage/` - 背景画像（戦闘時、訓練時）
+- `player/` - キャラクター画像
+- `dungeon/` - ダンジョン外観画像（各属性別）
+
+**画像命名規則**: `[属性]_[重量クラス]_[レアリティ].png`、一部は`_flipped`サフィックス付き
 
 ## 開発時の注意点
 
@@ -106,7 +125,12 @@ src/
 1. **新しい武器/敵**: `gameData.js`にデータ追加
 2. **新しい画面**: `components/`にコンポーネント作成し、`App.jsx`の`renderCurrentScreen()`に追加
 3. **新しい状態**: `useGameState.js`の`initialGameState`と対応するsetterを追加
+4. **新しいクイズ**: `QUIZ.txt`にクイズデータ追加（JSON形式）
 
 ### デバッグ
 
 ゲーム状態は`useGameState`で一元管理されているため、React DevToolsで容易にデバッグ可能。
+
+### git
+
+gitに上げる指示が出た際には、https://github.com/Kaito220009/game.tiiki/のブランチclaudecodeにプッシュまでしてください
