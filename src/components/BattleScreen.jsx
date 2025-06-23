@@ -52,7 +52,7 @@ const BattleScreen = ({
     const damage = await calculateDamage(selectedWeapon, player.level, currentEnemy.attribute, isCritical, currentEnemy.defense);
     const attributeMultiplier = await getAttributeMultiplier(selectedWeapon.attribute, currentEnemy.attribute);
     
-    // 敵撃破チェック（ダメージ適用後に判定）
+    // 敵撃破チェック（ダメージ適用前に判定）
     const willDefeatEnemy = currentEnemy.currentHp - damage <= 0;
     
     // スタミナ消費
@@ -65,19 +65,24 @@ const BattleScreen = ({
     setEnemyDamageEffect(true);
     setTimeout(() => setEnemyDamageEffect(false), 500);
     
-    // ログ追加
-    let attackLog = `${selectedWeapon.name}で攻撃！ ${damage}ダメージ！`;
+    // ログ追加（実際のダメージ値を表示）
+    let attackLog = `${selectedWeapon.name}で攻撃！ ${Math.floor(damage)}ダメージ！`;
     let logType = 'attack';
     
-    if (isCritical) {
+    // 効果に基づいてログタイプとメッセージを調整
+    if (isCritical && attributeMultiplier > 1) {
+      attackLog += ' (クリティカル！属性有効！)';
+      logType = 'critical';
+    } else if (isCritical && attributeMultiplier < 1) {
+      attackLog += ' (クリティカル！属性不利...)';
+      logType = 'critical';
+    } else if (isCritical) {
       attackLog += ' (クリティカル！)';
       logType = 'critical';
-    }
-    if (attributeMultiplier > 1) {
+    } else if (attributeMultiplier > 1) {
       attackLog += ' (属性有効！)';
       logType = 'effective';
-    }
-    if (attributeMultiplier < 1) {
+    } else if (attributeMultiplier < 1) {
       attackLog += ' (属性不利...)';
       logType = 'weak';
     }
@@ -148,7 +153,10 @@ const BattleScreen = ({
   };
 
   const getEnemyHpPercent = () => {
-    const percent = (currentEnemy.currentHp / currentEnemy.maxHp) * 100;
+    // gameStateから最新の敵の状態を取得
+    const latestEnemy = dungeon.enemies[dungeon.currentEnemyIndex];
+    if (!latestEnemy) return 0;
+    const percent = (latestEnemy.currentHp / latestEnemy.maxHp) * 100;
     return Math.max(0, percent); // 0未満にならないように制限
   };
 
@@ -182,10 +190,11 @@ const BattleScreen = ({
           <div className="status-gauge">
             <div 
               className={`status-fill enemy-hp-fill ${getEnemyHpStatus()}`}
-              style={{ width: `${isEnemyDefeated || currentEnemy.currentHp <= 0 ? 0 : getEnemyHpPercent()}%` }}
+              style={{ width: `${isEnemyDefeated || (dungeon.enemies[dungeon.currentEnemyIndex]?.currentHp || 0) <= 0 ? 0 : getEnemyHpPercent()}%` }}
             ></div>
             <span className="status-text">
-              {isEnemyDefeated || currentEnemy.currentHp <= 0 ? '0' : currentEnemy.currentHp}/{currentEnemy.maxHp}
+              {isEnemyDefeated || dungeon.enemies[dungeon.currentEnemyIndex]?.currentHp <= 0 ? 
+                '0' : (dungeon.enemies[dungeon.currentEnemyIndex]?.currentHp || 0)}/{currentEnemy.maxHp}
             </span>
           </div>
         </div>

@@ -10,24 +10,13 @@ const initialGameState = {
     maxStamina: 100,
     inventory: {
       weapons: [
-        WEAPONS.cutting_light_N.id, 
-        WEAPONS.cutting_light_R.id, 
-        WEAPONS.cutting_light_SR.id, 
-        WEAPONS.cutting_light_UR.id,
-        WEAPONS.polishing_light_N.id,
-        WEAPONS.polishing_light_R.id,
-        WEAPONS.polishing_light_SR.id,
-        WEAPONS.polishing_light_UR.id,
-        WEAPONS.welding_light_N.id,
-        WEAPONS.welding_light_R.id,
-        WEAPONS.welding_light_SR.id,
-        WEAPONS.welding_light_UR.id
+        WEAPONS.cutting_light_N.id
       ],
       items: {
         stamina_potion: 5
       }
     },
-    equippedWeapons: [WEAPONS.cutting_light_R.id, null, null, null] // 4装備枠
+    equippedWeapons: [WEAPONS.cutting_light_N.id, null, null, null] // 4装備枠
   },
   dungeon: {
     currentDungeon: null,
@@ -280,6 +269,88 @@ export const useGameState = () => {
     }));
   };
 
+  // 武器解放システム
+  const unlockRandomWeapon = () => {
+    // 全武器リストから現在持っていない武器を取得
+    const allWeapons = Object.values(WEAPONS);
+    const unlockedWeapons = gameState.player.inventory.weapons;
+    const availableWeapons = allWeapons.filter(weapon => !unlockedWeapons.includes(weapon.id));
+    
+    if (availableWeapons.length === 0) {
+      return null; // すべての武器が解放済み
+    }
+    
+    // ランダムで1つ選択
+    const randomIndex = Math.floor(Math.random() * availableWeapons.length);
+    const selectedWeapon = availableWeapons[randomIndex];
+    
+    // インベントリに追加
+    setGameState(prev => ({
+      ...prev,
+      player: {
+        ...prev.player,
+        inventory: {
+          ...prev.player.inventory,
+          weapons: [...prev.player.inventory.weapons, selectedWeapon.id]
+        }
+      }
+    }));
+    
+    return selectedWeapon;
+  };
+
+  // デバッグ用数値変更機能
+  const updateGameValues = (updates) => {
+    // 武器データの更新をgameData.jsに直接反映
+    if (updates.weapons) {
+      Object.keys(updates.weapons).forEach(weaponId => {
+        if (WEAPONS[weaponId]) {
+          Object.assign(WEAPONS[weaponId], updates.weapons[weaponId]);
+        }
+      });
+    }
+    
+    // 敵データの更新をgameData.jsに直接反映
+    if (updates.enemies) {
+      Object.keys(updates.enemies).forEach(enemyId => {
+        if (ENEMIES[enemyId]) {
+          Object.assign(ENEMIES[enemyId], updates.enemies[enemyId]);
+        }
+      });
+    }
+    
+    // プレイヤーデータの更新
+    if (updates.player) {
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          ...updates.player
+        }
+      }));
+    }
+    
+    // 現在の戦闘中の敵データも更新
+    if (updates.enemies && gameState.dungeon.inBattle) {
+      setGameState(prev => {
+        const enemies = prev.dungeon.enemies.map(enemy => {
+          if (updates.enemies[enemy.id]) {
+            return { ...enemy, ...updates.enemies[enemy.id] };
+          }
+          return enemy;
+        });
+        
+        return {
+          ...prev,
+          dungeon: {
+            ...prev.dungeon,
+            enemies: enemies
+          }
+        };
+      });
+    }
+  };
+
   return {
     gameState,
     equipWeapon,
@@ -292,6 +363,8 @@ export const useGameState = () => {
     dealDamageToEnemy,
     takeDamage,
     changeScreen,
-    addBattleLog
+    addBattleLog,
+    unlockRandomWeapon,
+    updateGameValues
   };
 }; 

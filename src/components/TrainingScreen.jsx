@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadQuizData } from '../gameData.js';
 import './TrainingScreen.css';
 
-const TrainingScreen = ({ gameState, onChangeScreen }) => {
+const TrainingScreen = ({ gameState, onChangeScreen, onUnlockRandomWeapon }) => {
   const [quizzes, setQuizzes] = useState([]);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
@@ -11,6 +11,11 @@ const TrainingScreen = ({ gameState, onChangeScreen }) => {
   const [score, setScore] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // ガチャ演出用の状態
+  const [showGacha, setShowGacha] = useState(false);
+  const [gachaWeapon, setGachaWeapon] = useState(null);
+  const [gachaAnimation, setGachaAnimation] = useState('spinning');
 
   useEffect(() => {
     const initializeQuiz = async () => {
@@ -55,8 +60,28 @@ const TrainingScreen = ({ gameState, onChangeScreen }) => {
       setShowResult(false);
       setIsCorrect(false);
     } else {
-      setIsComplete(true);
+      // クイズ完了時に武器ガチャを実行
+      startWeaponGacha();
     }
+  };
+
+  // 武器ガチャ演出を開始
+  const startWeaponGacha = () => {
+    setShowGacha(true);
+    setGachaAnimation('spinning');
+    
+    // 3秒間のスピン演出
+    setTimeout(() => {
+      const unlockedWeapon = onUnlockRandomWeapon();
+      setGachaWeapon(unlockedWeapon);
+      setGachaAnimation('revealed');
+      
+      // さらに3秒後に完了画面に移行
+      setTimeout(() => {
+        setIsComplete(true);
+        setShowGacha(false);
+      }, 3000);
+    }, 3000);
   };
 
   const handleRestart = () => {
@@ -66,6 +91,9 @@ const TrainingScreen = ({ gameState, onChangeScreen }) => {
     setIsCorrect(false);
     setScore(0);
     setIsComplete(false);
+    setShowGacha(false);
+    setGachaWeapon(null);
+    setGachaAnimation('spinning');
   };
 
   if (isLoading) {
@@ -226,6 +254,45 @@ const TrainingScreen = ({ gameState, onChangeScreen }) => {
           </div>
         )}
       </div>
+
+      {/* ガチャ演出画面 */}
+      {showGacha && (
+        <div className="gacha-overlay">
+          <div className="gacha-container">
+            <div className="gacha-title">新しい武器を獲得しました！</div>
+            
+            {gachaAnimation === 'spinning' ? (
+              <div className="gacha-spinning">
+                <div className="gacha-spinner"></div>
+                <div className="gacha-text">抽選中...</div>
+              </div>
+            ) : (
+              <div className="gacha-result">
+                <div className="weapon-reveal">
+                  {gachaWeapon ? (
+                    <>
+                      <img 
+                        src={gachaWeapon.image} 
+                        alt={gachaWeapon.name}
+                        className="gacha-weapon-image"
+                      />
+                      <div className="gacha-weapon-info">
+                        <div className="gacha-weapon-name">{gachaWeapon.name}</div>
+                        <div className="gacha-weapon-rarity">{gachaWeapon.rarity}</div>
+                        <div className="gacha-weapon-attribute">{gachaWeapon.attribute}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="no-weapon-message">
+                      すべての武器が解放済みです！
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
