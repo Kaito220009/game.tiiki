@@ -49,11 +49,11 @@ const BattleScreen = ({
     const isCritical = Math.random() < selectedWeapon.critRate;
     
     // ダメージ計算（非同期）
-    const damage = await calculateDamage(selectedWeapon, player.level, currentEnemy.attribute, isCritical);
+    const damage = await calculateDamage(selectedWeapon, player.level, currentEnemy.attribute, isCritical, currentEnemy.defense);
     const attributeMultiplier = await getAttributeMultiplier(selectedWeapon.attribute, currentEnemy.attribute);
     
-    // 敵撃破チェック（ダメージ適用前に判定）
-    const willDefeatEnemy = currentEnemy.currentHp <= damage;
+    // 敵撃破チェック（ダメージ適用後に判定）
+    const willDefeatEnemy = currentEnemy.currentHp - damage <= 0;
     
     // スタミナ消費
     onConsumeStamina(staminaCost);

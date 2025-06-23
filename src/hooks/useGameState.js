@@ -17,7 +17,11 @@ const initialGameState = {
         WEAPONS.polishing_light_N.id,
         WEAPONS.polishing_light_R.id,
         WEAPONS.polishing_light_SR.id,
-        WEAPONS.polishing_light_UR.id
+        WEAPONS.polishing_light_UR.id,
+        WEAPONS.welding_light_N.id,
+        WEAPONS.welding_light_R.id,
+        WEAPONS.welding_light_SR.id,
+        WEAPONS.welding_light_UR.id
       ],
       items: {
         stamina_potion: 5

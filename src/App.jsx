@@ -4,6 +4,7 @@ import MainScreen from './components/MainScreen.jsx';
 import InventoryScreen from './components/InventoryScreen.jsx';
 import DungeonScreen from './components/DungeonScreen.jsx';
 import BattleScreen from './components/BattleScreen.jsx';
+import TrainingScreen from './components/TrainingScreen.jsx';
 import './App.css';
 
 function App() {
@@ -63,6 +64,14 @@ function App() {
             onTakeDamage={takeDamage}
             onAddBattleLog={addBattleLog}
             onUseStaminaPotion={useStaminaPotion}
+          />
+        );
+      
+      case 'training':
+        return (
+          <TrainingScreen
+            gameState={gameState}
+            onChangeScreen={changeScreen}
           />
         );
       
