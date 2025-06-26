@@ -335,7 +335,7 @@ export const ENEMIES = {
   // 研磨ダンジョン
   polishing_normal: {
     id: 'polishing_normal',
-    name: 'クリスタルスライム',
+    name: 'ケズリー',
     attribute: 'POLISHING',
     maxHp: 180,
     attack: 35,
@@ -347,7 +347,7 @@ export const ENEMIES = {
   },
   polishing_boss: {
     id: 'polishing_boss',
-    name: '研磨職人マスター',
+    name: 'ボルテッカー',
     attribute: 'POLISHING',
     maxHp: 750,
     attack: 75,

@@ -51,7 +51,8 @@ src/
     ├── InventoryScreen.jsx   # インベントリ画面
     ├── DungeonScreen.jsx     # ダンジョン画面
     ├── BattleScreen.jsx      # 戦闘画面
-    └── TrainingScreen.jsx    # 訓練画面（クイズシステム）
+    ├── TrainingScreen.jsx    # 訓練画面（クイズシステム）
+    └── SettingsScreen.jsx    # 設定画面
 ```
 
 ### 状態管理
@@ -67,7 +68,7 @@ src/
 `currentScreen`で制御される単一画面アプリケーション：
 - `main` → `dungeon` → `battle` → `dungeon` または `main`
 - `main` → `training` → `main`
-- `inventory`はどの画面からでもアクセス可能
+- `inventory`, `settings`はどの画面からでもアクセス可能
 
 ### ゲームシステム
 

@@ -171,6 +171,19 @@ const BattleScreen = ({
     return 'critical';
   };
 
+  const getBattleBackground = () => {
+    if (!dungeon.currentDungeon) return '/image/stage/溶接ダンジョン_戦闘時背景.png';
+    
+    const backgroundMap = {
+      'cutting': '/image/stage/切削ダンジョン_戦闘時背景.png',
+      'welding': '/image/stage/溶接ダンジョン_戦闘時背景.png',
+      'polishing': '/image/stage/研磨ダンジョン_戦闘時背景.png',
+      'training': '/image/stage/訓練時背景_道場.png'
+    };
+    
+    return backgroundMap[dungeon.currentDungeon] || '/image/stage/溶接ダンジョン_戦闘時背景.png';
+  };
+
   return (
     <div className="battle-screen">
       {/* 上部: ステータスバー */}
@@ -203,7 +216,7 @@ const BattleScreen = ({
       {/* 横画面戦闘シーン */}
       <div className="horizontal-battle-scene">
         <img 
-          src="/image/stage/溶接ダンジョン_戦闘時背景.png" 
+          src={getBattleBackground()} 
           alt="戦闘背景"
           className="battle-bg-image"
         />

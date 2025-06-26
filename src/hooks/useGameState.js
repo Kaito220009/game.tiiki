@@ -299,6 +299,46 @@ export const useGameState = () => {
     return selectedWeapon;
   };
 
+  // 武器を追加する関数
+  const addWeaponToInventory = (weaponId) => {
+    setGameState(prev => {
+      if (prev.player.inventory.weapons.includes(weaponId)) {
+        return prev; // 既に持っている場合は何もしない
+      }
+      
+      return {
+        ...prev,
+        player: {
+          ...prev.player,
+          inventory: {
+            ...prev.player.inventory,
+            weapons: [...prev.player.inventory.weapons, weaponId]
+          }
+        }
+      };
+    });
+  };
+
+  // 武器を削除する関数
+  const removeWeaponFromInventory = (weaponId) => {
+    setGameState(prev => {
+      const newWeapons = prev.player.inventory.weapons.filter(id => id !== weaponId);
+      const newEquippedWeapons = prev.player.equippedWeapons.map(id => id === weaponId ? null : id);
+      
+      return {
+        ...prev,
+        player: {
+          ...prev.player,
+          inventory: {
+            ...prev.player.inventory,
+            weapons: newWeapons
+          },
+          equippedWeapons: newEquippedWeapons
+        }
+      };
+    });
+  };
+
   // デバッグ用数値変更機能
   const updateGameValues = (updates) => {
     // 武器データの更新をgameData.jsに直接反映
@@ -326,6 +366,20 @@ export const useGameState = () => {
         player: {
           ...prev.player,
           ...updates.player
+        }
+      }));
+    }
+    
+    // インベントリの更新
+    if (updates.inventory) {
+      setGameState(prev => ({
+        ...prev,
+        player: {
+          ...prev.player,
+          inventory: {
+            ...prev.player.inventory,
+            ...updates.inventory
+          }
         }
       }));
     }
@@ -365,6 +419,8 @@ export const useGameState = () => {
     changeScreen,
     addBattleLog,
     unlockRandomWeapon,
+    addWeaponToInventory,
+    removeWeaponFromInventory,
     updateGameValues
   };
 }; 
