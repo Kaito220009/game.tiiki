@@ -476,3 +476,112 @@
     padding: 8px;
   }
 }
+
+/* 武器管理用スタイル */
+.inventory-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(40, 40, 40, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.inventory-info p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.inventory-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ownership-status {
+  flex: 1;
+}
+
+.status-indicator {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid;
+}
+
+.status-indicator.owned {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.status-indicator.not-owned {
+  background: rgba(244, 67, 54, 0.2);
+  color: #F44336;
+  border-color: #F44336;
+}
+
+.toggle-btn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'DotGothic16', monospace;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid;
+  font-weight: bold;
+}
+
+.toggle-btn.add {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: #ffffff;
+  border-color: #4CAF50;
+}
+
+.toggle-btn.add:hover {
+  background: linear-gradient(135deg, #45a049, #4CAF50);
+  transform: translateY(-1px);
+}
+
+.toggle-btn.remove {
+  background: linear-gradient(135deg, #F44336, #d32f2f);
+  color: #ffffff;
+  border-color: #F44336;
+}
+
+.toggle-btn.remove:hover {
+  background: linear-gradient(135deg, #d32f2f, #F44336);
+  transform: translateY(-1px);
+}
+
+.value-card.owned {
+  border-color: rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.value-card.not-owned {
+  border-color: rgba(244, 67, 54, 0.3);
+  background: rgba(244, 67, 54, 0.05);
+  opacity: 0.8;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+  .inventory-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .toggle-btn {
+    width: 100%;
+    padding: 8px;
+  }
+  
+  .inventory-info p {
+    font-size: 14px;
+  }
+}

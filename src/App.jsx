@@ -23,6 +23,8 @@ function App() {
     changeScreen,
     addBattleLog,
     unlockRandomWeapon,
+    addWeaponToInventory,
+    removeWeaponFromInventory,
     updateGameValues
   } = useGameState();
 
@@ -85,6 +87,8 @@ function App() {
             gameState={gameState}
             onChangeScreen={changeScreen}
             onUpdateGameValues={updateGameValues}
+            onAddWeapon={addWeaponToInventory}
+            onRemoveWeapon={removeWeaponFromInventory}
           />
         );
       

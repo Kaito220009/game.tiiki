@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { WEAPONS, ENEMIES } from '../gameData.js';
 import './SettingsScreen.css';
 
-const SettingsScreen = ({ gameState, onChangeScreen, onUpdateGameValues }) => {
+const SettingsScreen = ({ gameState, onChangeScreen, onUpdateGameValues, onAddWeapon, onRemoveWeapon }) => {
   const [activeTab, setActiveTab] = useState('weapons');
   const [weaponValues, setWeaponValues] = useState({});
   const [enemyValues, setEnemyValues] = useState({});
@@ -116,6 +116,21 @@ const SettingsScreen = ({ gameState, onChangeScreen, onUpdateGameValues }) => {
     setTimeout(() => setUpdateStatus(''), 2000);
   };
 
+  // 武器の入手状況変更
+  const handleWeaponInventoryToggle = (weaponId) => {
+    const hasWeapon = gameState.player.inventory.weapons.includes(weaponId);
+    
+    if (hasWeapon) {
+      onRemoveWeapon(weaponId);
+      setUpdateStatus('武器を削除しました');
+    } else {
+      onAddWeapon(weaponId);
+      setUpdateStatus('武器を追加しました');
+    }
+    
+    setTimeout(() => setUpdateStatus(''), 2000);
+  };
+
 
   if (isLoading) {
     return (
@@ -143,6 +158,12 @@ const SettingsScreen = ({ gameState, onChangeScreen, onUpdateGameValues }) => {
             className={`tab-btn ${activeTab === 'weapons' ? 'active' : ''}`}
           >
             武器調整
+          </button>
+          <button
+            onClick={() => setActiveTab('inventory')}
+            className={`tab-btn ${activeTab === 'inventory' ? 'active' : ''}`}
+          >
+            武器管理
           </button>
           <button
             onClick={() => setActiveTab('enemies')}
@@ -197,6 +218,44 @@ const SettingsScreen = ({ gameState, onChangeScreen, onUpdateGameValues }) => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'inventory' && (
+          <div className="values-section">
+            <h3>武器入手状況管理</h3>
+            <div className="inventory-info">
+              <p>現在の武器数: {gameState.player.inventory.weapons.length}/{Object.keys(WEAPONS).length}</p>
+            </div>
+            <div className="values-grid">
+              {Object.values(WEAPONS).map(weapon => {
+                const hasWeapon = gameState.player.inventory.weapons.includes(weapon.id);
+                return (
+                  <div key={weapon.id} className={`value-card ${hasWeapon ? 'owned' : 'not-owned'}`}>
+                    <div className="value-header">
+                      <img src={weapon.image} alt={weapon.name} className="item-icon" />
+                      <div className="item-info">
+                        <h4>{weapon.name}</h4>
+                        <span className="item-meta">{weapon.attribute} - {weapon.rarity}</span>
+                      </div>
+                    </div>
+                    <div className="inventory-controls">
+                      <div className="ownership-status">
+                        <span className={`status-indicator ${hasWeapon ? 'owned' : 'not-owned'}`}>
+                          {hasWeapon ? '所持中' : '未所持'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleWeaponInventoryToggle(weapon.id)}
+                        className={`toggle-btn ${hasWeapon ? 'remove' : 'add'}`}
+                      >
+                        {hasWeapon ? '削除' : '追加'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

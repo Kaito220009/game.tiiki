@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { DUNGEONS, calculateRequiredExp, calculateTotalExpForLevel } from '../gameData.js';
 import './MainScreen.css';
 
@@ -9,6 +9,31 @@ const MainScreen = ({ gameState, onEnterDungeon, onChangeScreen, onUseStaminaPot
   const expProgress = ((player.exp - currentLevelExp) / (nextLevelExp - currentLevelExp)) * 100;
   
   const [selectedDungeon, setSelectedDungeon] = useState(Object.values(DUNGEONS)[0]);
+  const [clickCount, setClickCount] = useState(0);
+  const clickTimeoutRef = useRef(null);
+
+  // プレイヤー画像の連続クリックハンドラー
+  const handlePlayerClick = () => {
+    const newClickCount = clickCount + 1;
+    setClickCount(newClickCount);
+    
+    // 既存のタイムアウトをクリア
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+    
+    // 5回連続クリックで設定画面へ
+    if (newClickCount >= 5) {
+      setClickCount(0);
+      onChangeScreen('settings');
+      return;
+    }
+    
+    // 1秒間何もクリックされなかったらカウントリセット
+    clickTimeoutRef.current = setTimeout(() => {
+      setClickCount(0);
+    }, 1000);
+  };
 
   return (
     <div className="main-screen">
@@ -83,7 +108,9 @@ const MainScreen = ({ gameState, onEnterDungeon, onChangeScreen, onUseStaminaPot
               <img 
                 src="/image/player/Player_Main.png" 
                 alt="プレイヤー"
-                className="player-avatar"
+                className={`player-avatar ${clickCount > 0 ? 'secret-click' : ''}`}
+                onClick={handlePlayerClick}
+                style={{ cursor: 'pointer' }}
               />
               <div className="status-details">
                 <h3>レベル {player.level}</h3>
@@ -147,13 +174,6 @@ const MainScreen = ({ gameState, onEnterDungeon, onChangeScreen, onUseStaminaPot
               >
                 <span className="btn-icon">🎯</span>
                 <span className="btn-label">トレーニング</span>
-              </button>
-              <button 
-                onClick={() => onChangeScreen('settings')}
-                className="menu-btn settings-btn"
-              >
-                <span className="btn-icon">⚙️</span>
-                <span className="btn-label">設定</span>
               </button>
             </div>
           </div>
